@@ -1,15 +1,9 @@
 #include "iostream"
 #include "ctime"
 #include "vector"
+#include "algorithm"
 
 using namespace std;
-
-void menu();
-int practise();
-int exam();
-int query();
-int sort();
-int del();
 
 typedef struct{
     int id;
@@ -21,6 +15,17 @@ typedef struct{
     string id;
     vector<SCORE>score;
 }STUDENT;
+
+void menu();
+int practise();
+int exam();
+int query();
+int sort();
+int del();
+bool GreaterSort (SCORE &a,SCORE &b) {
+    return (a.score>b.score);
+}
+
 
 vector<STUDENT> student = {{"null","null",{{0,0}}}};
 
@@ -246,13 +251,13 @@ int exam(){
              << "你的答案" << question[i].input <<endl << endl << endl;
     }
     bool found = false;
-    for (auto iter = student.begin(); iter != student.end(); iter++) {
-        if (iter->id != id){
+    for (auto & iter : student) {
+        if (iter.id != id){
             continue;
         }
         else{
-            int num = iter->score.size();
-            iter->score.push_back({num+1,100*(double)ac/(double)count});
+            int num = (int)iter.score.size();
+            iter.score.push_back({num+1,100*(double)ac/(double)count});
             found =! found;
             break;
         }
@@ -268,17 +273,23 @@ int exam(){
 int query(){
     string name,id;
     system("cls");
-    cout << "请依次输入你的姓名和准考证号" << endl;
+    cout << "请依次输入您要查询的姓名和准考证号" << endl;
     cin >> name;
     cin >> id;
     cout << endl;
-    for (auto iter1 = student.begin(); iter1 != student.end(); iter1++) {
-        if (iter1->id == id and iter1->name == name){
+    bool found = false;
+    for (auto & iter1 : student) {
+        if (iter1.id == id and iter1.name == name){
+            found =! found;
             cout << "考试次数" << "\t考试成绩"<< endl;
-            for (auto iter2 = iter1->score.begin(); iter2 != iter1->score.end(); iter2++) {
-                cout << iter2->id << "\t\t" << iter2->score << endl << endl;
+            for (auto & iter2 : iter1.score) {
+                cout << iter2.id << "\t\t" << iter2.score << endl << endl;
             }
+            break;
         }
+    }
+    if (!found){
+        cout << "没有查询到您所输入的学生信息，请核对仔细后再次输入！" << endl;
     }
     system("pause");
     system("cls");
@@ -286,11 +297,51 @@ int query(){
 }
 
 int sort(){
-
+    string name,id;
+    system("cls");
+    cout << "请依次输入您要排序的姓名和准考证号" << endl;
+    cin >> name;
+    cin >> id;
+    cout << endl;
+    bool found = false;
+    for (auto & iter1 : student) {
+        if (iter1.id == id and iter1.name == name){
+            found =! found;
+            sort(iter1.score.begin(),iter1.score.end(),GreaterSort);
+            cout << "考试次数" << "\t考试成绩"<< endl;
+            for (auto & iter2 : iter1.score) {
+                cout << iter2.id << "\t\t" << iter2.score << endl << endl;
+            }
+            break;
+        }
+    }
+    if (!found){
+        cout << "没有查询到您所输入的学生信息，请核对仔细后再次输入！" << endl;
+    }
+    system("pause");
+    system("cls");
     return 0;
 }
 
 int del(){
-
+    string name,id;
+    system("cls");
+    cout << "请依次输入您要删除的姓名和准考证号" << endl;
+    cin >> name;
+    cin >> id;
+    cout << endl;
+    bool found = false;
+    for (auto iter1 = student.begin(); iter1 != student.end(); iter1++) {
+        if (iter1->id == id and iter1->name == name){
+            found =! found;
+            student.erase(iter1);
+            break;
+        }
+    }
+    if (!found){
+        cout << "没有查询到您所输入的学生信息，请核对仔细后再次输入！" << endl;
+    }
+    system("pause");
+    system("cls");
     return 0;
 }
